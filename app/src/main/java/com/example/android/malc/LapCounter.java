@@ -103,8 +103,7 @@ public class LapCounter extends AppCompatActivity {
             athleteView[i].setGravity(Gravity.CENTER);
             athleteView[i].setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
             athleteView[i].setEnabled(false);
-            athleteView[i].setId(R.id.athleteView + i);
-            Log.v("Athlete view IDs: ", "1 = " + String.valueOf(R.id.athleteView + i));
+            athleteView[i].setId(R.id.athleteIDs + i);
 
             /*Context menu*/
             registerForContextMenu(athleteView[i]);
@@ -157,14 +156,18 @@ public class LapCounter extends AppCompatActivity {
                    /*Haptic feed back*/
                    hapticFeedBack.vibrate(30);
                    /*Set color for last laps*/
+                   String deltaTimeStrOnClick = athletesList[finalI].getmDeltaTime();
                    int lapCountNumber = athletesList[finalI].getmLapCount();
                    if (lapCountNumber == 2) {
                        athleteView[finalI].setBackgroundColor(Color.YELLOW);
+                       deltaTimeStrOnClick = athletesList[finalI].getmDeltaTime();
                    }
                    else if (lapCountNumber == 1) {
                        athleteView[finalI].setBackgroundColor(Color.RED);
+                       deltaTimeStrOnClick = athletesList[finalI].getmDeltaTime();
                    }
                    else if (lapCountNumber == 0) {
+                       deltaTimeStrOnClick = athletesList[finalI].getmCumulativeTime();
                        athleteView[finalI].setBackgroundColor(Color.TRANSPARENT);
                        athleteView[finalI].setEnabled(false);
                        lapButtons[finalI].setEnabled(false);
@@ -181,9 +184,8 @@ public class LapCounter extends AppCompatActivity {
                    }
                    /*set Text of laps and time*/
                    lapCountText[finalI].setText(String.valueOf(lapCountNumber));
-                   String deltaTimeString = athletesList[finalI].getmDeltaTime();
 //                   String cumulativeTimeString = getString(R.string.cumulativeTextAddition) + athletesList[finalI].getmCumulativeTime();
-                   deltaTimeText[finalI].setText(deltaTimeString);
+                   deltaTimeText[finalI].setText(deltaTimeStrOnClick);
 //				   cumulativeTimeText[finalI].setText(cumulativeTimeString);
                }
             });
@@ -202,8 +204,7 @@ public class LapCounter extends AppCompatActivity {
 
         final Button startButton = new Button(this);
         startButton.setText(getString(R.string.buttonStartText));
-        startButton.setId(R.id.buttonShareResults);
-        Log.v("startButton id:", String.valueOf(R.id.buttonShareResults));
+        startButton.setId(R.id.athleteIDs+noOfAthletes);
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -221,7 +222,7 @@ public class LapCounter extends AppCompatActivity {
         rootLapCounter.addView(startButton);
     }
     private void shareResults() {
-        Button shareButton = (Button) findViewById(R.id.buttonShareResults);
+        Button shareButton = (Button) findViewById(R.id.athleteIDs+athletesList.length);
         shareButton.setText(R.string.shareResultsText);
         shareButton.setEnabled(true);
 
@@ -243,7 +244,7 @@ public class LapCounter extends AppCompatActivity {
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         // TODO Auto-generated method stub
-        int athleteID = v.getId()-500;
+        int athleteID = v.getId()- R.id.athleteIDs;
         menu.add(0, athleteID+10, 0, "DNS");
         menu.add(0, athleteID+100, 0, "DNF");
     }
@@ -254,14 +255,23 @@ public class LapCounter extends AppCompatActivity {
         Log.v("ContextMenu: ", "activeAthletes lowered");
         int athleteID = item.getItemId();
         Log.v("ContextMenu: ", "itemID = " + item.getItemId());
-        if (athleteID<2131426900){
-            Log.v("ContextMenu: ", "DNS Selected for athlete " + String.valueOf(athleteID-2131426842));
-            athletesList[athleteID-2131426842].setDNSorDNF("DNS");
-            lapCountText[athleteID-2131426842].setText(String.valueOf(athletesList[athleteID-2131426842].getmLapCount()));
-            lapCountText[athleteID-2131426842].setEnabled(false);
-            deltaTimeText[athleteID-2131426842].setText("DNS");
-            deltaTimeText[athleteID-2131426842].setEnabled(false);
-            lapButtons[athleteID-2131426842].setEnabled(false);
+        if (athleteID<100){
+            int athID = athleteID - 10;
+            athletesList[athID].setDNSorDNF("DNS");
+            lapCountText[athID].setText(String.valueOf(athletesList[athID].getmLapCount()));
+            lapCountText[athID].setEnabled(false);
+            deltaTimeText[athID].setText(R.string.DNS);
+            deltaTimeText[athID].setEnabled(false);
+            lapButtons[athID].setEnabled(false);
+        }
+        else if (athleteID>99){
+            int athID = athleteID - 100;
+            athletesList[athID].setDNSorDNF("DNF");
+            lapCountText[athID].setText(String.valueOf(athletesList[athID].getmLapCount()));
+            lapCountText[athID].setEnabled(false);
+            deltaTimeText[athID].setText(R.string.DNF);
+            deltaTimeText[athID].setEnabled(false);
+            lapButtons[athID].setEnabled(false);
         }
         if (activeAthletes > 1) {
             activeAthletes -= 1;

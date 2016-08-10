@@ -15,4 +15,6 @@
     <string name="lapTimeHeader">Lap time</string>
     <string name="duplicateAthletesToast">You have duplicate bibs.</string>
     <string name="shareResultsText">Share results</string>
+    <string name="DNS">DNS</string>
+    <string name="DNF">DNF</string>
 </resources>

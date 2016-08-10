@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="buttonShareResults" type="id"></item>
-    <item name="athleteView" type="id"></item>
+    <item name="athleteIDs" type="id">Easier allocation of IDs for athletes and buttons</item>
 </resources>
