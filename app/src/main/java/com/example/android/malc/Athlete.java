@@ -6,10 +6,12 @@ import android.util.Log;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 /**
  * Created by islavchev on 22.07.16.
+ * Athlete class to hold bibs, lap times and result
  */
 public class Athlete {
     private int mLapCount = 0;
@@ -17,8 +19,8 @@ public class Athlete {
     private long mStartTime = 0;
     long mDeltaTime = 0;
     long mCumulativeTime = 0;
-    private ArrayList<String> mLapTimes = new ArrayList<String>();
-    private ArrayList<String> mCumulativeTimes = new ArrayList<String>();
+    private ArrayList<String> mLapTimes = new ArrayList<>();
+    private ArrayList<String> mCumulativeTimes = new ArrayList<>();
 
     public Athlete (int LapCount, String BibNo) {
         mLapCount = LapCount;
@@ -40,6 +42,11 @@ public class Athlete {
     }
     public void setDNSorDNF (String mDNSorDNF){
         mLapCount = 0;
+        if (mDNSorDNF.equals("DNS")) {
+            mLapTimes.clear();
+            mCumulativeTimes.clear();
+        }
+        mLapTimes.add(mDNSorDNF);
         mCumulativeTimes.add(mDNSorDNF);
     }
 
@@ -79,13 +86,13 @@ public class Athlete {
                     if (ms==0){
                         timeInHMSM = "00.00";
                     }
-                    else timeInHMSM = String.format("%02d.%02d", sec, ms/10);
+                    else timeInHMSM = String.format(Locale.ENGLISH,"%02d.%02d", sec, ms/10);
                 }
-				else timeInHMSM = String.format("%02d.%02d", sec, ms/10);
+				else timeInHMSM = String.format(Locale.ENGLISH,"%02d.%02d", sec, ms/10);
             }
-			else timeInHMSM = String.format("%02d:%02d.%02d", min, sec, ms/10);
+			else timeInHMSM = String.format(Locale.ENGLISH,"%02d:%02d.%02d", min, sec, ms/10);
         }
-		else timeInHMSM = String.format("%02d:%02d:%02d.%02d", hr, min, sec, ms/10);
+		else timeInHMSM = String.format(Locale.ENGLISH,"%02d:%02d:%02d.%02d", hr, min, sec, ms/10);
 
         return timeInHMSM;
     }
