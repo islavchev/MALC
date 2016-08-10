@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">MALC</string>
+    <string name="textLapCount">No. of passes to be counted</string>
+    <string name="athletes_bibs">Athletes bibs:</string>
+    <string name="athlete">Athlete bib no.</string>
+    <string name="buttonEndConfig">Next</string>
+    <string name="noLapsToast">Please input number of laps</string>
+    <string name="noAthletesToast">Please add athlete bib numbers</string>
+    <string name="buttonStartText">Start</string>
+    <string name="cumulativeTextAddition">"Cumulative: "</string>
+    <string name="lapTimeTextAddition">"Lap time: "</string>
+    <string name="startButtonOffText">Finish</string>
+    <string name="bibNoHeader">Bib No.</string>
+    <string name="lapsToGoHeader">Laps to go</string>
+    <string name="lapTimeHeader">Lap time</string>
+    <string name="duplicateAthletesToast">You have duplicate bibs.</string>
+    <string name="shareResultsText">Share results</string>
+</resources>
