@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="buttonShareResults" type="id">100</item>
-    <item name="athleteView" type="id">500</item>
+    <item name="buttonShareResults" type="id"></item>
+    <item name="athleteView" type="id"></item>
 </resources>

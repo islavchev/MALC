@@ -18,12 +18,15 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+
 public class LapCounter extends AppCompatActivity {
 
     Athlete[] athletesList;
     int activeAthletes;
-    final int menuDNS = 1, menuDNF = 2;
     LinearLayout[] athleteView;
+    TextView[] lapButtons;
+    TextView[] lapCountText;
+    TextView[] deltaTimeText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,12 +45,12 @@ public class LapCounter extends AppCompatActivity {
         final Vibrator hapticFeedBack = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         athletesList = new Athlete[noOfAthletes];
         athleteView = new LinearLayout[noOfAthletes];
+        lapButtons = new TextView[noOfAthletes];
+        lapCountText = new TextView[noOfAthletes];
+        deltaTimeText = new TextView[noOfAthletes];
 
         /*Create static arrays of views*/
         final LinearLayout[] athleteCapsuleView = new LinearLayout[noOfAthletes];
-        final TextView[] lapButtons = new TextView[noOfAthletes];
-        final TextView[] lapCountText = new TextView[noOfAthletes];
-        final TextView[] deltaTimeText = new TextView[noOfAthletes];
 //        final TextView[] cumulativeTimeText = new TextView[noOfAthletes];
 
         /*LinearLayout with headers*/
@@ -101,6 +104,7 @@ public class LapCounter extends AppCompatActivity {
             athleteView[i].setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
             athleteView[i].setEnabled(false);
             athleteView[i].setId(R.id.athleteView + i);
+            Log.v("Athlete view IDs: ", "1 = " + String.valueOf(R.id.athleteView + i));
 
             /*Context menu*/
             registerForContextMenu(athleteView[i]);
@@ -199,6 +203,7 @@ public class LapCounter extends AppCompatActivity {
         final Button startButton = new Button(this);
         startButton.setText(getString(R.string.buttonStartText));
         startButton.setId(R.id.buttonShareResults);
+        Log.v("startButton id:", String.valueOf(R.id.buttonShareResults));
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -216,7 +221,7 @@ public class LapCounter extends AppCompatActivity {
         rootLapCounter.addView(startButton);
     }
     private void shareResults() {
-        final Button shareButton = (Button) findViewById(R.id.buttonShareResults);
+        Button shareButton = (Button) findViewById(R.id.buttonShareResults);
         shareButton.setText(R.string.shareResultsText);
         shareButton.setEnabled(true);
 
@@ -239,19 +244,31 @@ public class LapCounter extends AppCompatActivity {
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         // TODO Auto-generated method stub
         int athleteID = v.getId()-500;
-        menu.add(0, menuDNS, 0, "DNS");
-        menu.add(0, menuDNF, 0, "DNF");
+        menu.add(0, athleteID+10, 0, "DNS");
+        menu.add(0, athleteID+100, 0, "DNF");
     }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         // TODO Auto-generated method stub
-        activeAthletes -= 1;
-        switch (item.getItemId()) {
-            case menuDNF:
-                break;
-            case menuDNS:
-                break;
+        Log.v("ContextMenu: ", "activeAthletes lowered");
+        int athleteID = item.getItemId();
+        Log.v("ContextMenu: ", "itemID = " + item.getItemId());
+        if (athleteID<2131426900){
+            Log.v("ContextMenu: ", "DNS Selected for athlete " + String.valueOf(athleteID-2131426842));
+            athletesList[athleteID-2131426842].setDNSorDNF("DNS");
+            lapCountText[athleteID-2131426842].setText(String.valueOf(athletesList[athleteID-2131426842].getmLapCount()));
+            lapCountText[athleteID-2131426842].setEnabled(false);
+            deltaTimeText[athleteID-2131426842].setText("DNS");
+            deltaTimeText[athleteID-2131426842].setEnabled(false);
+            lapButtons[athleteID-2131426842].setEnabled(false);
+        }
+        if (activeAthletes > 1) {
+            activeAthletes -= 1;
+        }
+        else if (activeAthletes == 1){
+            activeAthletes -=1;
+            shareResults();
         }
         return super.onContextItemSelected(item);
     }
