@@ -17,4 +17,5 @@
     <string name="shareResultsText">Share results</string>
     <string name="DNS">DNS</string>
     <string name="DNF">DNF</string>
+    <string name="share_using">Share using:</string>
 </resources>

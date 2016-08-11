@@ -22,7 +22,7 @@ import java.util.ArrayList;
 public class LapCounter extends AppCompatActivity {
 
     Athlete[] athletesList;
-    int activeAthletes;
+    int activeAthletes, noOfAthletes, lapCount;
     LinearLayout[] athleteView;
     TextView[] lapButtons;
     TextView[] lapCountText;
@@ -38,10 +38,10 @@ public class LapCounter extends AppCompatActivity {
         LinearLayout.LayoutParams paramsMWn = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         /*Grab variables from intent*/
         Intent receivedIntent = getIntent();
-        int lapCount = Integer.parseInt(receivedIntent.getStringExtra("lapCount"));
+        lapCount = Integer.parseInt(receivedIntent.getStringExtra("lapCount"));
         ArrayList<String> athletesBibs = receivedIntent.getStringArrayListExtra("athletesBibs");
         activeAthletes = athletesBibs.size();
-        final int noOfAthletes = athletesBibs.size();
+        noOfAthletes = athletesBibs.size();
         final Vibrator hapticFeedBack = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         athletesList = new Athlete[noOfAthletes];
         athleteView = new LinearLayout[noOfAthletes];
@@ -226,17 +226,57 @@ public class LapCounter extends AppCompatActivity {
         shareButton.setText(R.string.shareResultsText);
         shareButton.setEnabled(true);
 
-/*
-        for (int i = 0; i < athletesList.length; i++){
-            ArrayList<String>
+        /*String[][] timesCumulatives = new String[noOfAthletes][lapCount];
+        String[][] timesDelta = new String[noOfAthletes][lapCount];
+        for (int i = 0; i < noOfAthletes; i++){
+            for (int j = 0; j < lapCount; j++){
+                if (j<athletesList[i].getmCumulativeTimes().size()){
+                    timesCumulatives[i][j] = athletesList[i].getmCumulativeTimes().get(j);
+                    timesDelta[i][j] = athletesList[i].getmLapTimes().get(j);
+                }
+                else if (j >= athletesList[i].getmCumulativeTimes().size()){
+                    timesCumulatives[i][j] = "";
+                    timesDelta[i][j] = "";
+                }
+                Log.v("Sharing results", "adding data for athlete " + i + ":" + timesCumulatives[i][j]);
+            }
+        }*/
+
+        final StringBuilder timesDeltaString = new StringBuilder();
+        timesDeltaString.append("\"Lap\";");
+        for (Athlete athlete:athletesList
+             ) {
+            timesDeltaString.append("\"");
+            timesDeltaString.append(athlete.getmBibNo());
+            timesDeltaString.append("\";");
         }
-*/
+        timesDeltaString.append("\n");
+        for (int j = 0; j < lapCount; j++){
+            timesDeltaString.append("\"");
+            timesDeltaString.append(j+1);
+            timesDeltaString.append("\";");
+            for (int i = 0; i < noOfAthletes; i++){
+                if (j<athletesList[i].getmLapTimes().size()){
+                    timesDeltaString.append("\"");
+                    timesDeltaString.append(athletesList[i].getmLapTimes().get(j));
+                    timesDeltaString.append("\";");
+                }
+                else if (j >= athletesList[i].getmLapTimes().size()){
+                    timesDeltaString.append("\"\";");
+                }
+            }
+            timesDeltaString.append("\n");
+        }
 
         shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 /*Create intent to share*/
-
+                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain");
+//                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject Here");
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, (CharSequence) timesDeltaString);
+                startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_using)));
             }
         });
     }
@@ -257,6 +297,8 @@ public class LapCounter extends AppCompatActivity {
         Log.v("ContextMenu: ", "itemID = " + item.getItemId());
         if (athleteID<100){
             int athID = athleteID - 10;
+            athleteView[athID].setEnabled(false);
+            athleteView[athID].setBackgroundColor(Color.TRANSPARENT);
             athletesList[athID].setDNSorDNF("DNS");
             lapCountText[athID].setText(String.valueOf(athletesList[athID].getmLapCount()));
             lapCountText[athID].setEnabled(false);
@@ -266,6 +308,8 @@ public class LapCounter extends AppCompatActivity {
         }
         else if (athleteID>99){
             int athID = athleteID - 100;
+            athleteView[athID].setEnabled(false);
+            athleteView[athID].setBackgroundColor(Color.TRANSPARENT);
             athletesList[athID].setDNSorDNF("DNF");
             lapCountText[athID].setText(String.valueOf(athletesList[athID].getmLapCount()));
             lapCountText[athID].setEnabled(false);
